@@ -5,7 +5,7 @@ import { ChannelInfo } from '../assets';
 
 export const GiphyContext = React.createContext({});
 
-const ChannelInner = ({ setIsEditing }) => {
+const ChannelInner = ({ setIsEditing, setShowSideBar }) => {
   const [giphyState, setGiphyState] = useState(false);
   const { sendMessage } = useChannelActionContext();
   
@@ -32,7 +32,9 @@ const ChannelInner = ({ setIsEditing }) => {
     <GiphyContext.Provider value={{ giphyState, setGiphyState }}>
       <div style={{ display: 'flex', width: '100%' }}>
         <Window>
-          <TeamChannelHeader setIsEditing={setIsEditing} />
+          <TeamChannelHeader setIsEditing={setIsEditing}
+            setShowSideBar={setShowSideBar}
+          />
           <MessageList />
           <MessageInput overrideSubmitHandler={overrideSubmitHandler} />
         </Window>
@@ -42,17 +44,25 @@ const ChannelInner = ({ setIsEditing }) => {
   );
 };
 
-const TeamChannelHeader = ({ setIsEditing }) => {
+const TeamChannelHeader = ({ setIsEditing, setShowSideBar }) => {
     const { channel, watcher_count } = useChannelStateContext();
     const { client } = useChatContext();
   
-    const MessagingHeader = () => {
+    const MessagingHeader = ({setShowSideBar}) => {
+
+      const toggleSidebar = () => {
+        setShowSideBar(prev => !prev);
+      }
       const members = Object.values(channel.state.members).filter(({ user }) => user.id !== client.userID);
       const additionalMembers = members.length - 3;
   
       if(channel.type === 'messaging') {
         return (
           <div className='team-channel-header__name-wrapper'>
+
+            <svg
+            onClick = {toggleSidebar}
+            width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd"><path d="M12 16c1.656 0 3 1.344 3 3s-1.344 3-3 3-3-1.344-3-3 1.344-3 3-3zm0 1c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2zm0-8c1.656 0 3 1.344 3 3s-1.344 3-3 3-3-1.344-3-3 1.344-3 3-3zm0 1c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2zm0-8c1.656 0 3 1.344 3 3s-1.344 3-3 3-3-1.344-3-3 1.344-3 3-3zm0 1c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2z"/></svg>
             {members.map(({ user }, i) => (
               <div key={i} className='team-channel-header__name-multi'>
                 <Avatar image={user.image} name={user.fullName || user.id} size={32} />
@@ -61,6 +71,7 @@ const TeamChannelHeader = ({ setIsEditing }) => {
             ))}
   
             {additionalMembers > 0 && <p className='team-channel-header__name user'>and {additionalMembers} more</p>}
+
           </div>
         );
       }
@@ -83,7 +94,9 @@ const TeamChannelHeader = ({ setIsEditing }) => {
   
     return (
       <div className='team-channel-header__container'>
-        <MessagingHeader />
+        <MessagingHeader 
+          setShowSideBar={setShowSideBar}
+        />
         <div className='team-channel-header__right'>
           <p className='team-channel-header__right-text'>{getWatcherText(watcher_count)}</p>
         </div>

@@ -16,7 +16,7 @@ const TeamChannelList = ({children, error = false, loading, type, isCreating, se
     if(loading){
         return (
             <div className='team-channel-list'>
-                <p className = 'team-channel-list__message loading'>
+                <p className = 'team-channel-list__message loading' style={{ color: 'black' }}>
                     {type === 'team' ? 'Channels' : 'Messages'} loading ...
                 </p>
             </div>

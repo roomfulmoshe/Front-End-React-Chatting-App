@@ -32,18 +32,21 @@ const App = () => {
     const [createType, setCreateType] = useState("");
     const [isCreating, setIsCreating] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [showSideBar, setShowSideBar] = useState(true);
     if(!authToken) return <Auth/>
 
   return (
     <div className='app__wrapper'>
         <Chat client = {client} theme='team light'>
             <ChannelListContainer
+                showSideBar={showSideBar}
+                setShowSideBar={setShowSideBar}
                 isCreating = {isCreating}
                 setIsCreating = {setIsCreating}
                 setIsEditing = {setIsEditing}
-                setCreateType = {setCreateType}
-            />
+                setCreateType = {setCreateType}/>
             <ChannelContainer
+                setShowSideBar={setShowSideBar}
                 isCreating = {isCreating}
                 setIsCreating = {setIsCreating}
                 setIsEditing = {setIsEditing}
